@@ -1,8 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:english_words/english_words.dart';
-import 'package:http/http.dart' as http;
 import 'dart:convert' as convert;
-
+import 'package:firstapp/Api.dart';
+import 'package:firstapp/Models/Commits.dart';
 
 void main() => runApp(MyApp());
 
@@ -10,10 +9,10 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      title: 'Welcome to Flutter',
+      title: 'Commits List',
       home: Scaffold(
         appBar: AppBar(
-          title: Text('Welcome to Flutter'),
+          title: Text('Commits List'),
         ),
         body: Center(
           child: RandomWords(),
@@ -29,43 +28,36 @@ class RandomWords extends StatefulWidget {
 }
 
 class RandomWordsState extends State<RandomWords> {
-  // Future<void> getData() async {
-  //   try {
-  //     await Future.delayed(Duration(seconds: 4), () => print('Large Latte'));
-  //     print('hello');
-  //   } catch (error) {
-  //     print(error);
-  //   }
-  // }
+    var commitList = new List<Commits>();
 
-  Future<void> getData() async {
-    var url = 'https://api.github.com/repos/facebook/codemod/commits';
-
-  // Await the http  as get response, then decode the json-formatted response.
-  var response = await http.get(
-    url,
-     headers: {'Accept': 'application/vnd.github.v3+json'}
-  
-  );
-  if (response.statusCode == 200) {
-    print(response.body);
-    var jsonResponse = convert.jsonDecode(response.body);
-    print(jsonResponse);
-  } else {
-    print('Request failed with status: ${response.statusCode}.');
-  }
+    _getAllCommits() {
+    Api.getCommits().then((response) {
+      setState(() {
+        Iterable list = convert.jsonDecode(response.body);
+        commitList = list.map((model) => Commits.fromJson(model)).toList();
+      });
+    });
   }
 
   @override
   initState() {
     // TODO: implement initState
     super.initState();
-    getData();
+    _getAllCommits();
+  }
+
+  dispose() {
+    super.dispose();
   }
 
   @override
-  Widget build(BuildContext context) {
-    final wordPair = WordPair.random();
-    return Text(wordPair.asPascalCase);
+ Widget build(context) {
+    return Center(
+      child: ListView.builder(
+          itemCount: commitList.length,
+          itemBuilder: (context, index) {
+            return ListTile(title: Text(commitList[index].commitMsg.message));
+          },
+        ));
   }
 }
