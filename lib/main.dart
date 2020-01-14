@@ -41,7 +41,7 @@ class RandomWordsState extends State<RandomWords> {
   Future<void> getData() async {
     var url = 'https://api.github.com/repos/facebook/codemod/commits';
 
-  // Await the http get response, then decode the json-formatted response.
+  // Await the http  as get response, then decode the json-formatted response.
   var response = await http.get(
     url,
      headers: {'Accept': 'application/vnd.github.v3+json'}
