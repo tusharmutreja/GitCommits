@@ -1,5 +1,3 @@
-import 'package:flutter/foundation.dart';
-
 class Commits {
   String sha;
   String node_id;
@@ -17,17 +15,14 @@ class Commits {
         commitMsg = CommitsMessages.fromJson(json['commit']);
 
   Map toJson() {
-    return { 'sha': sha, 'node_id': node_id};
+    return {'sha': sha, 'node_id': node_id};
   }
 }
 
 class CommitsMessages {
-String message;
+  String message;
 
-CommitsMessages({this.message});
+  CommitsMessages({this.message});
 
- CommitsMessages.fromJson(Map json)
-          : message = json['message'];
-
-
+  CommitsMessages.fromJson(Map json) : message = json['message'];
 }

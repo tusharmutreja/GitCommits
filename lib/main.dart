@@ -11,26 +11,23 @@ class MyApp extends StatelessWidget {
     return MaterialApp(
       title: 'Commits List',
       home: Scaffold(
-        appBar: AppBar(
-          title: Text('Commits List'),
-        ),
         body: Center(
-          child: RandomWords(),
+          child: CommitListWidget(),
         ),
       ),
     );
   }
 }
 
-class RandomWords extends StatefulWidget {
+class CommitListWidget extends StatefulWidget {
   @override
-  RandomWordsState createState() => RandomWordsState();
+  CommitListState createState() => CommitListState();
 }
 
-class RandomWordsState extends State<RandomWords> {
-    var commitList = new List<Commits>();
+class CommitListState extends State<CommitListWidget> {
+  var commitList = new List<Commits>();
 
-    _getAllCommits() {
+  _getAllCommits() {
     Api.getCommits().then((response) {
       setState(() {
         Iterable list = convert.jsonDecode(response.body);
@@ -51,13 +48,21 @@ class RandomWordsState extends State<RandomWords> {
   }
 
   @override
- Widget build(context) {
-    return Center(
-      child: ListView.builder(
+  Widget build(context) {
+    return Scaffold(
+        appBar: AppBar(
+          title: Text("Commits List"),
+        ),
+        body: ListView.builder(
           itemCount: commitList.length,
           itemBuilder: (context, index) {
             return ListTile(title: Text(commitList[index].commitMsg.message));
           },
+        ),
+        floatingActionButton: FloatingActionButton(
+          tooltip: 'Add', // used by assistive technologies
+          child: Icon(Icons.refresh),
+          onPressed: _getAllCommits,
         ));
   }
 }
